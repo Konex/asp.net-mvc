@@ -4,7 +4,7 @@ Unit of work and repository with Unity ioc
 In asp.net mvc + Entity Framework web development, I have seen people using dbContext directly in the controller (even in the view template).
 I am personally not a big fan of this approach. It creates a lot of noise in the controller as it knows your data persistence logic. And really, controller should not need to know how we persist the data, all it should worry about is orchestrating the view and let someone else to worry about handling business logic, data persistence, etc. 
 
-If you disagree with me it is okay just make sure you use the same dbContext per http request and you dispose dbContext when an http request finishes. 
+If you disagree with me it is okay just make sure you use the same dbContext per http request and dispose it when an http request finishes. 
 
 If you are still with me so far that's great let's dive into the code.
 Let's take a look at Repository.cs:
