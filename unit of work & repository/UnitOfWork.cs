@@ -14,12 +14,7 @@ namespace vDieu.Dal
         {
             _context = context;
         }
-
-        public UnitOfWork()
-        {
-            _context = new vDbContext();
-        }
-
+		
         public IRepository<T> Repository<T>() where T : class
         {
             if (_repositories == null)
