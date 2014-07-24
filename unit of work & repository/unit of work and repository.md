@@ -43,8 +43,11 @@ It is a generic repository and everything is pretty self-explanatory only two me
     }
 
 Both methods will defer execution but:
-The first virtual method returns an IQueryable type which means you can do Linq-to_Sql. So you can queryon the returned IQueryable further, the final query then will be executed in the db. On the other hand, the second method returns an IEnumerable, you can only do Linq-to-Object, meaning when you put further query on the returned IEnumerable, it actually goes to the db first, loads the result into memory then your second query will be executed in the memory.
+The first virtual method returns an IQueryable type which means you can do Linq-to-Sql. So you can query on the returned IQueryable further, the final query then will be executed in the db. 
+On the other hand, the second method returns an IEnumerable, you can only do Linq-to-Object, meaning when you apply further query on the returned IEnumerable, it actually goes to the db first, loads the result into memory then your second query will be executed in the memory.
+
 I let them in the good hands and believe you know what suits your situation the best.
+
 One another thing to note is the parameter 'inCludeProperties'. It is to deep load the relevant navigation properties. In your code you can do something like this:
     
     incld = "NavEntityName1" + "," + "NavEntityName2" + "NavEntityName3.NavEntityName4";
