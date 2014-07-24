@@ -42,8 +42,7 @@ It is a generic repository and everything is pretty self-explanatory only two me
         return orderBy != null ? orderBy(query).ToList() : query.ToList();
     }
 
-Both methods will defer execution but:
-The first virtual method returns an IQueryable type which means you can do Linq-to-Sql. So you can query on the returned IQueryable further, the final query then will be executed in the db. 
+Both methods will defer execution but the first virtual method returns an IQueryable type which means you can do Linq-to-Sql. So you can query on the returned IQueryable further, the final query then will be executed in the db. 
 On the other hand, the second method returns an IEnumerable, you can only do Linq-to-Object, meaning when you apply further query on the returned IEnumerable, it actually goes to the db first, loads the result into memory then your second query will be executed in the memory.
 
 I let them in the good hands and believe you know what suits your situation the best.
@@ -52,7 +51,66 @@ One another thing to note is the parameter 'inCludeProperties'. It is to deep lo
     
     incld = "NavEntityName1" + "," + "NavEntityName2" + "NavEntityName3.NavEntityName4";
 
+    var query = _unitOfWork.Repository<MyClassToDeepLoad>().GetDbQueryable(incld); 
+
 Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deeper level of navigation properties. 
 
 And that is our generic repository.
+
+Now let's take a look at the UnitOfWork.cs.
+
+    // Interface
+    public interface IUnitOfWork : IDisposable
+    {
+        IRepository<T> Repository<T>() where T : class;
+        void Save();
+        void Dispose();
+    }
                 
+Take note that the IUnitOfWork extends IDisposable. This is how the ioc container can dispose our unit of work class.
+
+Nothing fancy here, constructor injection thus dbContext to be injected by Unity.
+
+    public UnitOfWork(IDbContext context)
+    {
+        _context = context;
+    }
+
+Repositories are stored in a hash table. we first check if the repository is in the hash table, if not we create an instance using reflection,
+and store this instance in the hash table by using its type name as key.   
+
+    public IRepository<T> Repository<T>() where T : class
+    {
+        if (_repositories == null)
+            _repositories = new Hashtable();
+
+        var type = typeof(T).Name;
+
+        if (!_repositories.ContainsKey(type))
+        {
+            var repositoryType = typeof(Repository<>);
+
+            var repositoryInstance =
+                Activator.CreateInstance(repositoryType
+                        .MakeGenericType(typeof(T)), _context);
+
+            _repositories.Add(type, repositoryInstance);
+        }
+
+        return (IRepository<T>)_repositories[type];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
