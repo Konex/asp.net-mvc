@@ -1,3 +1,3 @@
-asp.net-mvc -- unit of work and repository with Unity ioc
+Unit of work and repository with Unity ioc
 ===========
 
