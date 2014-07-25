@@ -69,7 +69,7 @@ Now let's take a look at the UnitOfWork.cs.
                 
 Take note that the IUnitOfWork extends IDisposable. This is how the ioc container can dispose our unit of work class.
 
-Nothing fancy here, constructor injection thus dbContext to be injected by Unity.
+Nothing fancy here, constructor injection so dbContext to be injected by Unity.
 
     public UnitOfWork(IDbContext context)
     {
@@ -100,7 +100,25 @@ and store this instance in the hash table by using its type name as key.
         return (IRepository<T>)_repositories[type];
     }
 
+Make sure you implement the Dispose method so Unity can call it when an http request ends.
+	
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!_disposed)
+		{
+			if (disposing)
+			{
+				_context.Dispose();
+			}
+		}
+		_disposed = true;
+	}
 
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
 
 
 
