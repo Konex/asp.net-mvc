@@ -7,7 +7,7 @@ I am personally not a big fan of this approach. It creates a lot of noise in the
 If you disagree with me it is okay just make sure you use the same dbContext per http request and dispose it when an http request finishes. 
 
 If you are still with me so far that's great let's dive into the code.
-Let's take a look at Repository.cs:
+Let's take a look at _Repository.cs_**.
 It is a generic repository and everything is pretty self-explanatory only two methods here deserve a bit of text.
     
     // IQueryable<T>
@@ -57,7 +57,7 @@ Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deep
 
 And that is our generic repository.
 
-Now let's take a look at the UnitOfWork.cs.
+Now let's take a look at _UnitOfWork.cs_**.
 
     // Interface
     public interface IUnitOfWork : IDisposable
@@ -76,7 +76,7 @@ Nothing fancy here, constructor injection so dbContext to be injected by Unity.
         _context = context;
     }
 
-Repositories are stored in a hash table. we first check if the repository is in the hash table, if not we create an instance using reflection,
+Repositories are stored in a hash table. We first check if the repository is in the hash table, if not, we create an instance using reflection,
 and store this instance in the hash table by using its type name as key.   
 
     public IRepository<T> Repository<T>() where T : class
@@ -92,7 +92,7 @@ and store this instance in the hash table by using its type name as key.
 
             var repositoryInstance =
                 Activator.CreateInstance(repositoryType
-                        .MakeGenericType(typeof(T)), _context);
+                         .MakeGenericType(typeof(T)), _context);
 
             _repositories.Add(type, repositoryInstance);
         }
