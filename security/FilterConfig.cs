@@ -15,7 +15,7 @@ namespace vDieu.Web
 
         public static void RegisterWebApiFilters(System.Web.Http.Filters.HttpFilterCollection filters)
         {
-			// only for web api controller actions
+	    // only for web api controller actions
             filters.Add(new WebApiRequireHttpsAttribute());
             filters.Add(new TokenValidationAttribute());
         }
