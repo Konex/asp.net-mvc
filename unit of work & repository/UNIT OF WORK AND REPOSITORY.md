@@ -7,7 +7,7 @@ I am personally not a big fan of this approach. It creates a lot of noise in the
 If you disagree with me it is okay just make sure you use the same dbContext per http request and dispose it when an http request finishes. 
 
 If you are still with me so far that's great let's dive into the code.
-Let's take a look at _Repository.cs_**.
+Let's take a look at **_Repository.cs_**.
 It is a generic repository and everything is pretty self-explanatory only two methods here deserve a bit of text.
     
     // IQueryable<T>
@@ -57,7 +57,7 @@ Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deep
 
 And that is our generic repository.
 
-Now let's take a look at _UnitOfWork.cs_**.
+Now let's take a look at **_UnitOfWork.cs_**.
 
     // Interface
     public interface IUnitOfWork : IDisposable
