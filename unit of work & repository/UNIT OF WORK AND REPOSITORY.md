@@ -135,7 +135,7 @@ Then last in **_Global.asax.cs_**, add this line below in Application_Start().
 
 	Bootstrapper.Initialise();
 	
-Voilà! Now you have a generic db access using Entity Framework and Unity ioc to ensure your db context is 'request safe'. I have seen some people try to make dbContext thread safe (by the way [Entity Framework db context is intrinsically not thread safe](http://stackoverflow.com/a/11034535/2391304)), but as a new feature in C# we can now use async and await so you can have multiple thread within an http request. By making dbContext thread safe means you can potentially run into scenario such as you may have multiple instances of dbContext in the same controller action where async is used to handle db access. This could be disastrous! 
+Voilà! Now you have a generic db access using Entity Framework and Unity ioc to ensure your db context is 'request safe'. I have seen some people try to make dbContext thread safe (by the way [Entity Framework db context is intrinsically not thread safe](http://stackoverflow.com/a/11034535/2391304)), but as a new feature in C# we can now use async and await so you can have multiple threads within an http request.
 
 
 
