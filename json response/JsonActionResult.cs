@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace vDieu.Web 
 {
-    public class JsonNetResult : ActionResult
+    public class JsonActionResult : ActionResult
     {
         public Encoding ContentEncoding { get; set; }
         public string ContentType { get; set; }
@@ -17,7 +17,7 @@ namespace vDieu.Web
         public JsonSerializerSettings SerializerSettings { get; set; }
         public Formatting Formatting { get; set; }
 
-        public JsonNetResult()
+        public JsonActionResult()
         {
             SerializerSettings = new JsonSerializerSettings();
             //this.Formatting = Newtonsoft.Json.Formatting.Indented;
