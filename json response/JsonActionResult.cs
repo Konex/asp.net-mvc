@@ -25,8 +25,7 @@ namespace vDieu.Web
 
         public override void ExecuteResult(ControllerContext context)
         {
-            if (context == null)
-                throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException("context");
 
             HttpResponseBase response = context.HttpContext.Response;
 
@@ -38,11 +37,7 @@ namespace vDieu.Web
 
             if (ContentEncoding != null) response.ContentEncoding = ContentEncoding;
 
-            if (Data != null)
-            {
-                var data = Data.ToJson();
-                response.Write(data);
-            }
+            if (Data != null) response.Write(Data.ToJson());
         }
     }
 }
