@@ -14,7 +14,7 @@ namespace vDieu.Web
         public string ContentType { get; set; }
         public object Data { get; set; }
 
-		public IsoDateTimeConverter IsoDateTimeConverter { get; set;}
+	public IsoDateTimeConverter IsoDateTimeConverter { get; set;}
         public JsonSerializerSettings SerializerSettings { get; set; }
         public Formatting Formatting { get; set; }
 
@@ -37,7 +37,7 @@ namespace vDieu.Web
 
             if (ContentEncoding != null) response.ContentEncoding = ContentEncoding;
 
-			// Here we call the extension method Object.ToJsonNet().
+	    // Here we call the extension method Object.ToJsonNet().
             if (Data != null) response.Write(Data.ToJsonNet());
         }
     }
