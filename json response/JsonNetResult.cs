@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace vDieu.Web 
 {
-    public class JsonActionResult : ActionResult
+    public class JsonNetResult : ActionResult
     {
         public Encoding ContentEncoding { get; set; }
         public string ContentType { get; set; }
@@ -17,7 +17,7 @@ namespace vDieu.Web
         public JsonSerializerSettings SerializerSettings { get; set; }
         public Formatting Formatting { get; set; }
 
-        public JsonActionResult()
+        public JsonNetResult()
         {
             SerializerSettings = new JsonSerializerSettings();
             //this.Formatting = Newtonsoft.Json.Formatting.Indented;
@@ -25,7 +25,8 @@ namespace vDieu.Web
 
         public override void ExecuteResult(ControllerContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null)
+                throw new ArgumentNullException("context");
 
             HttpResponseBase response = context.HttpContext.Response;
 
@@ -35,9 +36,15 @@ namespace vDieu.Web
 
             response.CacheControl = "no-cache";
 
-            if (ContentEncoding != null) response.ContentEncoding = ContentEncoding;
+            if (ContentEncoding != null)
+                response.ContentEncoding = ContentEncoding;
 
-            if (Data != null) response.Write(Data.ToJson());
+            if (Data != null)
+            {
+
+                var data = Data.ToJson();
+                response.Write(data);
+            }
         }
     }
 }
