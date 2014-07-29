@@ -22,7 +22,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 
-import com.yini.yiniApp.utils.application.vConstants;
+import com.yini.yiniApp.utils.application.constants;
 import com.google.common.io.ByteStreams;
 
 public class ImageDownloadService extends IntentService {
@@ -30,16 +30,16 @@ public class ImageDownloadService extends IntentService {
 
 	public ImageDownloadService() {
 		super(TAG);
-		if (vConstants.SUPPORTS_ECLAIR) setIntentRedelivery(true);
+		if (constants.SUPPORTS_ECLAIR) setIntentRedelivery(true);
 		else setIntentRedelivery(false);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		String filter = intent.getStringExtra(vConstants.EXTRA_KEY_API_INTENT_FILTER);
+		String filter = intent.getStringExtra(constants.EXTRA_KEY_API_INTENT_FILTER);
 
 		try {
-			String url = intent.getStringExtra(vConstants.EXTRA_KEY_API_URL);
+			String url = intent.getStringExtra(constants.EXTRA_KEY_API_URL);
 			
 			HttpResponse httpResponse = (new DefaultHttpClient())
 					.execute(new HttpGet(url));
