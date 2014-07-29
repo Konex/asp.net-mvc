@@ -9,7 +9,6 @@ namespace vDieu.Web
 {
     public static class JsonResultExtension
     {
-
         public static ActionResult JsonResult(this IController controller, ModelStateDictionary state)
         {
             var dct = state.Where(s => s.Value.Errors.Count > 0)
