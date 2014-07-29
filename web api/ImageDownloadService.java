@@ -30,16 +30,13 @@ public class ImageDownloadService extends IntentService {
 
 	public ImageDownloadService() {
 		super(TAG);
-		if (vConstants.SUPPORTS_ECLAIR)
-			setIntentRedelivery(true);
-		else
-			setIntentRedelivery(false);
+		if (vConstants.SUPPORTS_ECLAIR) setIntentRedelivery(true);
+		else setIntentRedelivery(false);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		String filter = intent
-				.getStringExtra(vConstants.EXTRA_KEY_API_INTENT_FILTER);
+		String filter = intent.getStringExtra(vConstants.EXTRA_KEY_API_INTENT_FILTER);
 
 		try {
 			String url = intent.getStringExtra(vConstants.EXTRA_KEY_API_URL);
