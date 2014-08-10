@@ -40,11 +40,9 @@ The extension method Join is specified as below:
 
 	public static string Join(this IEnumerable<string> src, string separator = "")
 	{
-		if (src == null || !src.Any())
-		{
-			return string.Empty;
-		}
-		return string.Join(separator, src.ToArray());
+		if (src == null || !src.Any()) return string.Empty;
+		
+		return string.Join(separator, src);
 	}
 
 
