@@ -11,7 +11,7 @@ Now, let's take a look at the **JsonNetResultExtension.cs**
         public static ActionResult JsonNet(this IController controller, ModelStateDictionary state)
         {
             var dct = state.Where(s => s.Value.Errors.Count > 0)
-                .ToDictionary(s => s.Key, s => s.Value.Errors.Select(p => p.ErrorMessage).Join(","));
+                .ToDictionary(s => s.Key, s => s.Value.Errors.Select(e => e.ErrorMessage).Join(","));
             return controller.JsonNet(false, "", dct);
         }
 
@@ -20,5 +20,19 @@ Now, let's take a look at the **JsonNetResultExtension.cs**
             return new JsonNetResult() { Data = new JsonResultModel<object>(isSuccessful, message) { Data = data } };
         }
     }
+
+The first extension method is to convert model state errors into json. Before we dive into the code, let's take a look at how model state looks like.
+
+![ModelState Overview](https://github.com/Konex/asp.net-mvc/json response/images/modelStateOverview.png)
+![ModelState Expended View](https://github.com/Konex/asp.net-mvc/json response/images/modelStateExpendedView.png)
+
+
+
+
+
+
+
+
+
 
 
