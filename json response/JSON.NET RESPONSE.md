@@ -17,7 +17,7 @@ Now, let's take a look at the **JsonNetResultExtension.cs**
 
         public static ActionResult JsonNet(this IController controller, bool isSuccessful, string message = "", object data = null)
         {
-            return new JsonNetResult() { Data = new JsonResultModel<object>(isSuccessful, message) { Data = data } };
+            return new JsonNetResult() { Data = new JsonResultViewModel<object>(isSuccessful, message) { Data = data } };
         }
     }
 
@@ -36,7 +36,7 @@ For each one of those model properties that have errors, we get the errors out a
 	
 	s => s.Value.Errors.Select(e => e.ErrorMessage).Join(",")
 	
-The extension method Join is specified as below:	
+The extension method Join is specified as below and the whole reason to use this method is to be able to chain the operation together.	
 
 	public static string Join(this IEnumerable<string> src, string separator = "")
 	{
@@ -44,6 +44,9 @@ The extension method Join is specified as below:
 		
 		return string.Join(separator, src);
 	}
+
+After we get the errors out for those model properties that giving out errors. We then use ToDictionary in Linq to turn it into a Dictionary<string, string> object. And then we pass that dictionary object to another controller extension method to finally convert the model state errors to json.
+
 
 
 
