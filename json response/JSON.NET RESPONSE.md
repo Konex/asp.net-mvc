@@ -47,9 +47,47 @@ The extension method Join is specified as below and the whole reason to use this
 
 After we get the errors out for those model properties that giving out errors. We then use ToDictionary in Linq to turn it into a Dictionary<string, string> object. And then we pass that dictionary object to another controller extension method to finally convert the model state errors to json.
 
+	public static ActionResult JsonNet(this IController controller, bool isSuccessful, string message = "", object data = null)
+	{
+		return new JsonNetResult() { Data = new JsonResultViewModel<object>(isSuccessful, message) { Data = data } };
+	}
+
+In above code we new a JsonResultViewModel which contains information such as whether the action is successful, message, and json payload which could be a json serialized data entity that you send back to the client or model state error dictionary.
+
+
+	public class JsonResultViewModel<T>
+    {
+        public JsonResultViewModel()
+        {
+        }
+
+        public JsonResultViewModel(bool isSuccessful, T data)
+        {
+            Data = data;
+        }
+        public JsonResultViewModel(bool isSuccessful, string msg = "")
+        {
+            Success = isSuccessful;
+            Message = msg;
+        }
+
+        [JsonProperty("isSuccessful")]
+        public bool IsSuccessful { get; set; }
+
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("data")]
+        public T Data { get; set; }
+
+        [JsonProperty("modelState")]
+        public Dictionary<string, string> ModelState { get; set; }
+    }
 
 
 
+
+ 
 
 
 
