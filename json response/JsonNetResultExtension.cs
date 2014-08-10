@@ -12,7 +12,7 @@ namespace vDieu.Web
         public static ActionResult JsonNet(this IController controller, ModelStateDictionary state)
         {
             var dct = state.Where(s => s.Value.Errors.Count > 0)
-                .ToDictionary(s => s.Key, s => s.Value.Errors.Select(p => p.ErrorMessage).Join(","));
+                .ToDictionary(s => s.Key, s => s.Value.Errors.Select(e => e.ErrorMessage).Join(","));
             return controller.JsonNet(false, "", dct);
         }
 
