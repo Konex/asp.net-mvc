@@ -18,7 +18,7 @@ namespace vDieu.Web
 
         public static ActionResult JsonNet(this IController controller, bool isSuccessful, string message = "", object data = null)
         {
-            return new JsonNetResult() { Data = new JsonResultModel<object>(isSuccessful, message) { Data = data } };
+            return new JsonNetResult() { Data = new JsonResultViewModel<object>(isSuccessful, message) { Data = data } };
         }
     }
 }
