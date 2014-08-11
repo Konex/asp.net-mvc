@@ -148,6 +148,17 @@ In **JsonNetResult**,
 		return = JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
 	}
 
+To catch model state errors in your controller, simply do:
+
+	public ActionResult YiniAction(yiniViewModel model)
+	{
+		if (!ModelState.IsValid)
+		{
+			return this.JsonNet(ModelState);
+		}
+	}
+
+
 
 
 
