@@ -23,9 +23,9 @@ Now, let's take a look at the **JsonNetResultExtension.cs**
 
 The first extension method is to convert model state errors into json. Before we explain the code, let's take a look at how model state looks like.
 
-![ModelState Overview](https://github.com/Konex/asp.net-mvc/blob/master/json%20response/images/modelStateOverview.PNG)
+![ModelState Overview](https://github.com/Konex/asp.net-mvc/blob/master/json-response/images/modelStateOverview.PNG)
 
-![ModelState Expended View](https://github.com/Konex/asp.net-mvc/blob/master/json%20response/images/modelStateExpendedView.PNG)
+![ModelState Expended View](https://github.com/Konex/asp.net-mvc/blob/master/json-response/images/modelStateExpendedView.PNG)
 
 The "Keys" in ModelState are the names of property in your model. In the "Values" note, it contains various values for each property. As you can see there is an "Errors" attribute under "Values" which specifies if there are any errors corresponding to each model property. Our goal is to extract out those model properties that have errors and stitch the errors into a string split by a comma then this error string into a dictionary by the model property name.
 
