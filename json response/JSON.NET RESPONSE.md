@@ -82,10 +82,70 @@ In above code we new a JsonResultViewModel which contains information such as wh
         public T Data { get; set; }
     }
 
+In **JsonNetResult**, 
 
+	public class JsonNetResult : ActionResult
+    {
+        public Encoding ContentEncoding { get; set; }
+        public string ContentType { get; set; }
+        public object Data { get; set; }
 
+		public IsoDateTimeConverter IsoDateTimeConverter { get; set;}
+        public JsonSerializerSettings SerializerSettings { get; set; }
+        public Formatting Formatting { get; set; }
 
- 
+        public JsonNetResult()
+        {
+            SerializerSettings = new JsonSerializerSettings();
+        }
+
+        public override void ExecuteResult(ControllerContext context)
+        {
+            if (context == null) throw new ArgumentNullException("context");
+
+            var response = context.HttpContext.Response;
+
+            response.ContentType = !string.IsNullOrEmpty(ContentType)
+              ? ContentType
+              : "application/json";
+
+            response.CacheControl = "no-cache";
+
+            if (ContentEncoding != null) response.ContentEncoding = ContentEncoding;
+
+	    // Here we call the extension method Object.ToJsonNet().
+            if (Data != null) 
+			{
+				if (IsoDateTimeConverter != null && Formatting != null) 
+                    response.Write(Data.ToJsonNet(SerializerSettings, Formatting, IsoDateTimeConverter));
+                else 
+                    response.Write(Data.ToJsonNet());
+			}
+        }
+    }
+	
+**ToJsonNet** extension method. 
+	
+	public static string ToJsonNet(this object obj)
+	{
+		var settings = new JsonSerializerSettings()
+		{
+	// Json.NET will ignore objects in reference loops and not serialize them. 
+	// The first time an object is encountered it will be serialized as usual 
+	// but if the object is encountered as a child object of itself the serializer 
+	// will skip serializing it.
+			ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+	// maximum depth allowed when reading JSON.
+			MaxDepth = 1,
+			PreserveReferencesHandling = PreserveReferencesHandling.None
+		};
+		
+	// TODO: set the date format in your culture. Here is set for Australia date.
+		var timeConverter = new IsoDateTimeConverter {DateTimeFormat = "dd-MM-yyyy HH:mm:ss"};
+		settings.Converters.Add(timeConverter);
+
+		return = JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
+	}
 
 
 
