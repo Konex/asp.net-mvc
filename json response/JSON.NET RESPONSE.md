@@ -54,6 +54,7 @@ After we get the errors out for those model properties that giving out errors. W
 
 In above code we new a JsonResultViewModel which contains information such as whether the action is successful, message, and json payload which could be a json serialized data entity that you send back to the client or model state error dictionary.
 
+**JsonResultViewModel** is the view model that contains our action result. The "data" property is where we store the json payload or model state errors.
 
 	public class JsonResultViewModel<T>
     {
@@ -79,9 +80,6 @@ In above code we new a JsonResultViewModel which contains information such as wh
 
         [JsonProperty("data")]
         public T Data { get; set; }
-
-        [JsonProperty("modelState")]
-        public Dictionary<string, string> ModelState { get; set; }
     }
 
 
