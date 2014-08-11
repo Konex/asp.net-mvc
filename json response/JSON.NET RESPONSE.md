@@ -82,7 +82,7 @@ In above code we new a JsonResultViewModel which contains information such as wh
         public T Data { get; set; }
     }
 
-In **JsonNetResult**, 
+In **JsonNetResult**, it is standard procedure straight from Json.net [documentation].(http://james.newtonking.com/archive/2008/10/16/asp-net-mvc-and-json-net)
 
 	public class JsonNetResult : ActionResult
     {
@@ -124,7 +124,7 @@ In **JsonNetResult**,
         }
     }
 	
-**ToJsonNet** extension method. 
+The **ToJsonNet** extension method. 
 	
 	public static string ToJsonNet(this object obj)
 	{
@@ -148,7 +148,9 @@ In **JsonNetResult**,
 		return = JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
 	}
 
-To catch model state errors in your controller, simply do:
+To catch model state errors or return a json action result using the default jsonNet settings in your controller. 
+
+There are a few things we need to take note here. First, we use a service instance rather than directly interacting with DbContext for a number of reasons such as clearer separation of concerns, EF being non-thread-safe means you better do your all EF stuff in one project thus to be able to apply to a more complex scenario where you deploy different projects(dlls) to different servers. Second, "_yiniService" is constructor-DIed into our controller. Third, we convert view model into Data Transfer Object by using Automapper's dynamic mapping capability. Then convert DTO into our domain object to be persisted by EF. Any one of these three aspects deserves its own discussion and we are not going to do that in this article.      
 
 	public ActionResult YiniAction(yiniViewModel viewModel)
 	{
@@ -159,6 +161,9 @@ To catch model state errors in your controller, simply do:
 		
 		return this.JsonNet(true);
 	}
+
+
+
 
 
 
