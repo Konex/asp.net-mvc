@@ -9,14 +9,13 @@ namespace vDieu.Web
 {
     public static class ApiJsonNetResultExtensions
     {
-        public static JsonResultModel<T> JsonNet<T>(this ApiController controller,
+        public static JsonResultViewModel<T> JsonNet<T>(this ApiController controller,
                 bool isSuccessful, string message = "", T data = default(T))
         {
-            var result = new JsonResultModel<T>(true) { Message = message, Data = data };
-            return result;
+            return new JsonResultViewModel<T>(true) { Message = message, Data = data };
         }
 
-        public static JsonResultModel<object> JsonNet(this ApiController controller,
+        public static JsonResultViewModel<object> JsonNet(this ApiController controller,
               bool isSuccessful, string message = "")
         {
             return controller.JsonNet<Object>(isSuccessful, message, null);
