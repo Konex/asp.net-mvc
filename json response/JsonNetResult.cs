@@ -38,7 +38,13 @@ namespace vDieu.Web
             if (ContentEncoding != null) response.ContentEncoding = ContentEncoding;
 
 	    // Here we call the extension method Object.ToJsonNet().
-            if (Data != null) response.Write(Data.ToJsonNet());
+            if (Data != null) 
+			{
+				if (IsoDateTimeConverter != null && Formatting != null) 
+                    response.Write(Data.ToJsonNet(SerializerSettings, Formatting, IsoDateTimeConverter));
+                else 
+                    response.Write(Data.ToJsonNet());
+			}
         }
     }
 }
