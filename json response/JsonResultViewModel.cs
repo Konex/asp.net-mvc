@@ -30,9 +30,5 @@ namespace vDieu.Web.Models
 
         [JsonProperty("data")]
         public T Data { get; set; }
-
-        [JsonProperty("modelState")]
-        public Dictionary<string, string> ModelState { get; set; }
     }
-
 }
