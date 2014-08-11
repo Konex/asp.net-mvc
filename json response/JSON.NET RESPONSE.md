@@ -152,19 +152,10 @@ To catch model state errors in your controller, simply do:
 
 	public ActionResult YiniAction(yiniViewModel viewModel)
 	{
-		if (!ModelState.IsValid)
-		{
-			return this.JsonNet(ModelState);
-		}
+		if (!ModelState.IsValid) return this.JsonNet(ModelState);
 		
-		if (viewModel.Id == 0) 
-		{
-			_yiniService.Add(viewModel.DynamicMap<YiniDto>());
-		}
-		else 
-		{
-			_yiniService.Update(viewModel.DynamicMap<YiniDto>())
-		}
+		if (viewModel.Id == 0) _yiniService.Add(viewModel.DynamicMap<YiniDto>());
+		else _yiniService.Update(viewModel.DynamicMap<YiniDto>())
 		
 		return this.JsonNet(true);
 	}
