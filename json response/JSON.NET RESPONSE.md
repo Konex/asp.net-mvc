@@ -82,7 +82,7 @@ In above code we new a JsonResultViewModel which contains information such as wh
         public T Data { get; set; }
     }
 
-In **JsonNetResult**, it is standard procedure straight from Json.net [documentation].(http://james.newtonking.com/archive/2008/10/16/asp-net-mvc-and-json-net)
+In **JsonNetResult**, it is standard procedure straight from Json.net [documentation](http://james.newtonking.com/archive/2008/10/16/asp-net-mvc-and-json-net).
 
 	public class JsonNetResult : ActionResult
     {
