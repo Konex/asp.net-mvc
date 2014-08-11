@@ -7,7 +7,7 @@ using vDieu.Web.Models;
 
 namespace vDieu.Web
 {
-    public static class JsonNetResultExtension
+    public static class JsonNetResultExtensions
     {
         public static ActionResult JsonNet(this IController controller, ModelStateDictionary state)
         {
