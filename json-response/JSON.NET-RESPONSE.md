@@ -162,7 +162,22 @@ There are a few things we need to take note here. First, we use a service instan
 		return this.JsonNet(true);
 	}
 
+Now, let's move on to Web API. 
 
+	public static class ApiJsonNetResultExtensions
+    {
+        public static JsonResultViewModel<T> JsonNet<T>(this ApiController controller,
+                bool isSuccessful, string message = "", T data = default(T))
+        {
+            return new JsonResultViewModel<T>(true) { Message = message, Data = data };
+        }
+
+        public static JsonResultViewModel<object> JsonNet(this ApiController controller,
+              bool isSuccessful, string message = "")
+        {
+            return controller.JsonNet<Object>(isSuccessful, message, null);
+        }
+    }
 
 
 
