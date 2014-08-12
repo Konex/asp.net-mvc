@@ -162,7 +162,7 @@ There are a few things we need to take note here. First, we use a service instan
 		return this.JsonNet(true);
 	}
 
-Now, let's move on to Web API. 
+Now, let's move on to Web API. In the **ApiJsonNetResultExtensions**.
 
 	public static class ApiJsonNetResultExtensions
     {
