@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using vDieu.Dal.Contracts;
 
 namespace vDieu.Dal
@@ -7,18 +7,23 @@ namespace vDieu.Dal
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IDbContext _context;
-        private Hashtable _repositories;
+        private Dictionary<string, object> _repositories;
         private bool _disposed;
 
         public UnitOfWork(IDbContext context)
         {
             _context = context;
         }
-		
+
+        public UnitOfWork()
+        {
+            _context = new vDbContext();
+        }
+
         public IRepository<T> Repository<T>() where T : class
         {
             if (_repositories == null)
-                _repositories = new Hashtable();
+                _repositories = new Dictionary<string, object>();
 
             var type = typeof(T).Name;
 
