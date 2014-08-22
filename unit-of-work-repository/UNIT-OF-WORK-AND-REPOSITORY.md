@@ -49,7 +49,7 @@ I let them in the good hands and believe you know what suits your situation the 
 
 One another thing to note is the parameter 'inCludeProperties'. It is to deep load the relevant navigation properties. In your code you can do something like this:
     
-    incld = "NavEntityName1" + "," + "NavEntityName2" + "NavEntityName3.NavEntityName4";
+    incld = "NavEntityName1" + "," + "NavEntityName2" + "," + "NavEntityName3.NavEntityName4";
 
     var query = _unitOfWork.Repository<MyClassToDeepLoad>().GetDbQueryable(incld); 
 
@@ -82,7 +82,7 @@ and store this instance in the hash table by using its type name as key.
     public IRepository<T> Repository<T>() where T : class
     {
         if (_repositories == null)
-            _repositories = new Hashtable();
+            _repositories = new Dictionary<string, object>();
 
         var type = typeof(T).Name;
 
