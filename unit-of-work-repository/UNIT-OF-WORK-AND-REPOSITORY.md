@@ -76,8 +76,8 @@ Nothing fancy here, constructor injection so dbContext to be injected by Unity.
         _context = context;
     }
 
-Repositories are stored in a hash table. We first check if the repository is in the hash table, if not, we create an instance using reflection,
-and store this instance in the hash table by using its type name as key.   
+Repositories are stored in a dictionary. We first check if the repository is in the dictionary, if not, we create an instance using reflection,
+and store this instance in the dictionary by using its type name as key.   
 
     public IRepository<T> Repository<T>() where T : class
     {
