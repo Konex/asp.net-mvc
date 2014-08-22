@@ -102,24 +102,44 @@ and store this instance in the hash table by using its type name as key.
 
 Make sure you implement the Dispose method so Unity can call it when an http request ends.
 	
+	// Technically, we don't need an overloaded version of Dispose in here unless
+	// your unit of work class accesses resources through unmanaged code, then
+	// you would need to implement a Finalize method (commented out below).
+	//
+	// But here I just want to demonstrate in a more complicated scenario that your 
+	// clean up code might need to access external objects then you should only do 
+	// so during disposing.
 	protected virtual void Dispose(bool disposing)
 	{
-		if (!_disposed)
-		{
-			if (disposing)
-			{
-				_context.Dispose();
-			}
+		if (_disposed) return;
+		
+		if (disposing)
+		{	
+			// This unit of work object is being disposed but not finalized yet.
+			// So it is still safe to access other objects (except the base object)
+			// only from inside this code block.
+			_context.Dispose();
 		}
-		_disposed = true;
+
+		// Perform cleanup tasks here that need to be done in either Dispose and Finalize
+		// ...	
 	}
 
+	// ~UnitOfWork()
+	// {
+	// 	Dispose(false);
+	// }
+	
 	public void Dispose()
 	{
 		Dispose(true);
+		_disposed = true;
+		// Because calling Finalize method has a performance hit,
+		// so we tell .NET not to call the Finalize method
+		// after we have disposed the DbContext.
 		GC.SuppressFinalize(this);
 	}
-
+	
 In **_Bootstrapper.cs_**, you make sure the same dbContext is being used per http request by newing a PerRequestLifetimeManager when you do Unity register.
 
 	public static void RegisterTypes(IUnityContainer container)
