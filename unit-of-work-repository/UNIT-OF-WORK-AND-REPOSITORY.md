@@ -1,10 +1,28 @@
 Generic Unit of Work with Unity
 ===========
 
-In this article I will try my best to explain how to build a generic data access layer in the context of a layered application. It assumes that you have already had knowledge of Entity Framework and Unity IOC.    
+In this article I will to explain how to build a generic data access layer in the context of a layered application with Entity Framework and Microsoft Unity.
 
-In the past I have seen people using DbContext directly in controllers, even in the view templates.
-I am personally not a big fan of this approach for three main reasons. First, it creates noise in controller as it knows your data persistence logic. Ideally all controller should worry about is orchestrating the view and let someone else to worry about handling business logic, data persistence, etc. Second, in a layered app, you would normally put EF in a separate project while your controllers in a web project, if you use DbContext in controller, which means you are putting data persistence logic in two different places. It does not matter that much I think in a small app, but when it comes to an enterprise scale app, putting similar stuff in one place for me it is always a good approach. Third, if your app is in a scale that you need to deploy your app into a server farm where you have a web server handling view, and an application server processing tasks such as business logic, data persistence, auditing. So the controller and actually EF data persistence run in different processes. EF is intrinsically not thread safe so you will write a great deal of code to make it work in scenario like this. 
+Before we dive in, let's consider why do we need to get into all these hassles, why can't we just use DbContext in controller? Well, technically speaking, yes we can! And in the past I have seen people use DbContext directly in controllers, even in the view templates.
+
+I am personally not a big fan of this approach. First of all, just straight away from my bare eyes I can see it creates noise in controller by decorating a lot of 'using' code block to seal DbContext inside for that to make sure DbContext is disposed properly. But with using statement, you can't catch exceptions. So you fall back to disposing DbContext manually.
+
+	try
+	{
+
+	}
+	catch(Exception ex)
+	{
+
+	}
+	finally
+	{
+		_dbContext.Dispose();
+	}
+
+ Apart from the noise, controller now knows your data persistence logic. Ideally all controller should worry about is orchestrating the view and let someone else to worry about handling business logic, data persistence, etc. Second, in a layered app, you would normally put EF in a separate project while your controllers in a web project, if you use DbContext in controller, which means you are putting data persistence logic in two different places. It does not matter that much I think in a small app, but when it comes to an enterprise scale app, putting similar stuff in one place always feels right to me. Third, if your app is in a scale that you need to deploy it into a server farm where you have a web server handling traffic from Internet, and an application server processing tasks such as business logic, data persistence, auditing. So if you use DbContext directly in the controller, then your EF data persistence will run in different processes. Being intrinsically not thread safe so you will write a great deal of code to make EF work in scenario like this. 
+
+I have read quite a few articles on the Net explaining how to implement Unit of Work and Repository patterns in an ASP.NET app with Entity Framework. But quite often the scenarios and samples in those articles are too simple and very few of them give me a thorough walk-through on how do make the Unit of Work and Repository classes generic. [This article](http://www.asp.net/mvc/tutorials/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application) from ASP.NET MVC site however gives me some hints on how to go about building one.
 
 If you disagree with me it is okay just make sure you use the same DbContext per http request and dispose it when an http request finishes. 
 
