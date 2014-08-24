@@ -1,10 +1,12 @@
-Unit of work and repository with Unity ioc
+Generic Unit of Work with Unity
 ===========
 
-In asp.net mvc + Entity Framework web development, I have seen people using dbContext directly in the controller (even in the view template).
-I am personally not a big fan of this approach. It creates a lot of noise in the controller as it knows your data persistence logic. And really, controller should not need to know how we persist the data, all it should worry about is orchestrating the view and let someone else to worry about handling business logic, data persistence, etc. 
+In this article I will try my best to explain how to build a generic data access layer in the context of a layered application. It assumes that you have already had knowledge of Entity Framework and Unity IOC.    
 
-If you disagree with me it is okay just make sure you use the same dbContext per http request and dispose it when an http request finishes. 
+In the past I have seen people using DbContext directly in controllers, even in the view templates.
+I am personally not a big fan of this approach for three main reasons. First, it creates noise in controller as it knows your data persistence logic. Ideally all controller should worry about is orchestrating the view and let someone else to worry about handling business logic, data persistence, etc. Second, in a layered app, you would normally put EF in a separate project while your controllers in a web project, if you use DbContext in controller, which means you are putting data persistence logic in two different places. It does not matter that much I think in a small app, but when it comes to an enterprise scale app, putting similar stuff in one place for me it is always a good approach. Third, if your app is in a scale that you need to deploy your app into a server farm where you have a web server handling view, and an application server processing tasks such as business logic, data persistence, auditing. So the controller and actually EF data persistence run in different processes. EF is intrinsically not thread safe so you will write a great deal of code to make it work in scenario like this. 
+
+If you disagree with me it is okay just make sure you use the same DbContext per http request and dispose it when an http request finishes. 
 
 If you are still with me so far that's great let's dive into the code.
 Let's take a look at **_Repository.cs_**.
@@ -69,7 +71,7 @@ Now let's take a look at **_UnitOfWork.cs_**.
                 
 Take note that the IUnitOfWork extends IDisposable. This is how the ioc container can dispose our unit of work class.
 
-Nothing fancy here, constructor injection so dbContext to be injected by Unity.
+Nothing fancy here, constructor injection so DbContext to be injected by Unity.
 
     public UnitOfWork(IDbContext context)
     {
@@ -140,7 +142,7 @@ Make sure you implement the Dispose method so Unity can call it when an http req
 		GC.SuppressFinalize(this);
 	}
 	
-In **_Bootstrapper.cs_**, you make sure the same dbContext is being used per http request by newing a PerRequestLifetimeManager when you do Unity register.
+In **_Bootstrapper.cs_**, you make sure the same DbContext is being used per http request by newing a PerRequestLifetimeManager when you do Unity register.
 
 	public static void RegisterTypes(IUnityContainer container)
     {
@@ -155,7 +157,7 @@ Then last in **_Global.asax.cs_**, add this line below in Application_Start().
 
 	Bootstrapper.Initialise();
 	
-Voilà! Now you have a generic db access using Entity Framework and Unity ioc to ensure your db context is 'request safe'. (by the way [Entity Framework db context is intrinsically not thread safe](http://stackoverflow.com/a/11034535/2391304)) Since asp.net is using thread pool, also as a new feature in C# we can now use async and await so you can have multiple threads within an http request. So you need to be extra careful about multiple dbContext instances might get created per thread since a single web request can spawn multiple threads and thread pooling meaning those dbContext instances might get cached up and live as long as the host thread lives. This is a bad bad bad situation and your users might see inconsistently ugly data. Well, I think I better stop here as ObjectContext thread safe deserves a full on [discussion](http://stackoverflow.com/a/3266481/2391304) on its own. 
+Voilà! Now you have a generic db access using Entity Framework and Unity ioc to ensure your db context is 'request safe'. (by the way [Entity Framework db context is intrinsically not thread safe](http://stackoverflow.com/a/11034535/2391304)) Since asp.net is using thread pool, also as a new feature in C# we can now use async and await so you can have multiple threads within an http request. So you need to be extra careful about multiple DbContext instances might get created per thread since a single web request can spawn multiple threads and thread pooling meaning those DbContext instances might get cached up and live as long as the host thread lives. This is a bad bad bad situation and your users might see inconsistently ugly data. Well, I think I better stop here as ObjectContext thread safe deserves a full on [discussion](http://stackoverflow.com/a/3266481/2391304) on its own. 
 
 Merci beaucoup if you have read this far!   
 
