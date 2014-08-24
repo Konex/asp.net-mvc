@@ -3,9 +3,9 @@ Generic Unit of Work with Unity
 
 In this article I will to explain how to build a generic abstraction layer that sits between the business logic layer and data access layer with Entity Framework and Microsoft Unity.
 
-Before we dive in, let's consider why all the hassle, why can't we just use DbContext in controller? Well, technically speaking, yes we can! And in the past I have seen people use DbContext directly in controllers, even in the view templates in real-life projects.
+Before we dive in, let's step back and ask why all the hassle, why can't we just use DbContext in controller? Well, technically speaking, yes we can! And in the past I have seen people use DbContext directly in controllers, even in the view templates in real-life projects.
 
-I am personally not a big fan of this approach. First of all, straight away I can see it creates noise in controller by decorating 'using' code blocks to seal DbContext to take advantage that DbContext is disposed automatically. But with using statement, you can't catch exceptions. So you fall back to disposing DbContext manually.
+I am personally not a big fan of this approach. First of all, straight away I can see it creates noise in controller by decorating 'using' code blocks to seal DbContext taking the advantage that DbContext is disposed automatically. But with using statement, you can't catch exceptions. So you fall back to disposing DbContext manually.
 
 	try
 	{
@@ -20,14 +20,14 @@ I am personally not a big fan of this approach. First of all, straight away I ca
 		_dbContext.Dispose();
 	}
 
-Apart from the noise, controller now knows your data persistence logic and responsible for disposing DbContext. That doesn't look good to me because now your view logic and data persistence logic are meshed up together. This will make unit testing or change data store a pain.
+Apart from the noise, controller now knows your data persistence logic and is responsible for disposing DbContext. That doesn't look good to me because now your view logic and data persistence logic are meshed up together. This will make unit testing or change data store a pain.
  
-Furthermore, if your app is in such a scale that you need to deploy it into a server farm where you have a web server hosting your web project, and an application server for EF data persistence project. As you use DbContext directly in the controller, then your EF data persistence is running in different processes. Being intrinsically not thread safe, you will have to write a great deal of code to make EF work in scenario like this. Nevertheless, putting all EF related stuff in one place in general is a good practice doesn't matter how big your app is. 
+Furthermore, if your app is in such a scale that you need to deploy it into a server farm where you have a web server hosting your web project, and an application server for EF data persistence project. As you use DbContext directly in the controller, then your EF data persistence is running in different processes. EF is intrinsically not thread safe, you will have to write a great deal of code to make it work in scenario like this. Nevertheless, putting all EF related stuff in one place in general is a good practice doesn't matter how big your app is. 
 
 That's enough justification so let's see how we can create a generic layer with Unit of work and Repository patterns. I have read quite a few articles on the Net about how to implement Unit of Work and Repository patterns in an ASP.NET app with Entity Framework. But quite often the scenarios and samples in those articles are too simple and hardly any one of them gives me a thorough walk-through on how do make Unit of Work and Repository classes generic. [This article](http://www.asp.net/mvc/tutorials/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application) from ASP.NET MVC site however gives me some hints on how to go about implementing one.
 
 Let's take a look at **_Repository.cs_**. 
-It is a generic repository and everything is pretty self-explanatory only two methods here deserve a bit of text.
+It is a generic repository and everything is pretty self-explanatory only two methods here deserve a bit of attention.
     
     // IQueryable<T>
     public virtual IQueryable<T> GetDbQueryable(string includeProperties = "")
