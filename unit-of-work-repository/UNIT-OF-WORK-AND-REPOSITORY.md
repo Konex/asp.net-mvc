@@ -66,15 +66,15 @@ On the other hand, the second method returns an IEnumerable, you can only do Lin
 
 I provide both methods here and believe you know what suits your situation the best.
 
-One another thing to note is the parameter 'inCludeProperties'. It is to deep load the relevant navigation properties. In your code you can do something like this:
+One another thing to note is the 'inCludeProperties' parameter. It is to deep load the relevant navigation properties. In your business logic layer you can do something like this:
     
     incld = "NavEntityName1" + "," + "NavEntityName2" + "," + "NavEntityName3.NavEntityName4";
 
     var query = _unitOfWork.Repository<MyClassToDeepLoad>().GetDbQueryable(incld); 
 
-Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deeper level of navigation properties. 
+Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deeper level of object graph. 
 
-And that is our generic repository.
+And that is our generic repository class.
 
 Now let's take a look at **_UnitOfWork.cs_**.
 
