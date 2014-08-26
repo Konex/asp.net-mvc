@@ -72,9 +72,7 @@ One another thing to note is the 'inCludeProperties' parameter. It is to deep lo
 
     var query = _unitOfWork.Repository<MyClassToDeepLoad>().GetDbQueryable(incld); 
 
-Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deeper level of object graph. 
-
-And that is our generic repository class.
+Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deeper levels of object graph. And that is our generic repository class.
 
 Now let's take a look at **_UnitOfWork.cs_**.
 
