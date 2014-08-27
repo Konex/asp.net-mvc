@@ -4,6 +4,7 @@ Generic Unit of Work with Entity Framework and Unity
 In this article I will to explain how to build a generic abstraction layer that sits between business logic layer and data access layer with Entity Framework and Microsoft Unity.
 
 Here is an illustration of our layered architecture.
+
 ![layered mvc architeture](https://github.com/Konex/asp.net-mvc/blob/master/unit-of-work-repository/images/layered-app-mvc.png)
 
 Before we dive in, let's step back and ask why all the hassle, why can't we just use DbContext in controller? Well, technically speaking, yes we can. And in the past I have seen people use DbContext directly in controllers, even in the view templates in real-life projects.
