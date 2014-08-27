@@ -44,18 +44,14 @@ It is a generic repository and everything is pretty self-explanatory only two me
     }
 
     // IEnumerable<T>
-    public virtual IEnumerable<T> GetAll(
-            Expression<Func<T, bool>> filter = null,
+    public virtual IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "")
     {
         IQueryable<T> query = DbSet;
 
-        if (filter != null)
-        {
-            query = query.Where(filter);
-        }
-
+        if (filter != null) query = query.Where(filter);
+        
         foreach (var includeProperty in includeProperties.Split
             (new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
         {
@@ -78,7 +74,7 @@ One another thing to note is the 'inCludeProperties' parameter. It is to deep lo
 
 Notice the 'NavEntityName3.NavEntityName4'. This is how you get down to the deeper levels of object graph. And that is our generic repository class.
 
-Now let's take a look at **_UnitOfWork.cs_**.
+Now let's take a look at **_IUnitOfWork.cs_**.
 
     // Interface
     public interface IUnitOfWork : IDisposable
@@ -88,17 +84,16 @@ Now let's take a look at **_UnitOfWork.cs_**.
         void Dispose();
     }
                 
-Take note that the IUnitOfWork extends IDisposable. This is how the ioc container can dispose our unit of work class.
+Take note that the IUnitOfWork extends IDisposable. This is how the ioc container can dispose our unit of work class without us having to do it manually.
 
-Nothing fancy here, constructor injection so DbContext to be injected by Unity.
+In **_UnitOfWork.cs_**. Again nothing fancy here, constructor injection so DbContext is injected by Unity.
 
     public UnitOfWork(IDbContext context)
     {
         _context = context;
     }
 
-Repositories are stored in a dictionary. We first check if the repository is in the dictionary, if not, we create an instance using reflection,
-and store this instance in the dictionary by using its type name as key.   
+Repositories are stored in a dictionary. We first check if a repository in interest is in the dictionary, if not, we create an instance using reflection, and store this instance in the dictionary by using its type name as key.   
 
     public IRepository<T> Repository<T>() where T : class
     {
@@ -111,8 +106,7 @@ and store this instance in the dictionary by using its type name as key.
         {
             var repositoryType = typeof(Repository<>);
 
-            var repositoryInstance =
-                Activator.CreateInstance(repositoryType
+            var repositoryInstance = Activator.CreateInstance(repositoryType
                          .MakeGenericType(typeof(T)), _context);
 
             _repositories.Add(type, repositoryInstance);
@@ -121,7 +115,7 @@ and store this instance in the dictionary by using its type name as key.
         return (IRepository<T>)_repositories[type];
     }
 
-Make sure you implement the Dispose method so Unity can call it when an http request ends.
+Make sure you implement the Dispose so Unity can call it when an http request ends.
 	
 	// Technically, we don't need an overloaded version of Dispose in here unless
 	// your unit of work class accesses resources through unmanaged code, then
@@ -129,7 +123,8 @@ Make sure you implement the Dispose method so Unity can call it when an http req
 	//
 	// But here I just want to demonstrate in a more complicated scenario that your 
 	// clean up code might need to access external objects then you should only do 
-	// so during disposing.
+	// so during disposing, never never access external objects during Finalize!
+	
 	protected virtual void Dispose(bool disposing)
 	{
 		if (_disposed) return;
@@ -142,13 +137,13 @@ Make sure you implement the Dispose method so Unity can call it when an http req
 			_context.Dispose();
 		}
 
-		// Perform cleanup tasks here that need to be done in either Dispose and Finalize
-		// ...	
+		// Perform cleanup tasks here that need to be done in both Dispose and Finalize
+		// ... Do cleanup
 	}
 
 	// ~UnitOfWork()
 	// {
-	// 	Dispose(false);
+	// 		Dispose(false);
 	// }
 	
 	public void Dispose()
@@ -161,7 +156,7 @@ Make sure you implement the Dispose method so Unity can call it when an http req
 		GC.SuppressFinalize(this);
 	}
 	
-In **_Bootstrapper.cs_**, you make sure the same DbContext is being used per http request by newing a PerRequestLifetimeManager when you do Unity register.
+In Unity Boostrapper class, **_Bootstrapper.cs_**, you need to make sure the same DbContext is being used per http request by newing a PerRequestLifetimeManager when you do Unity register.
 
 	public static void RegisterTypes(IUnityContainer container)
     {
@@ -176,7 +171,7 @@ Then last in **_Global.asax.cs_**, add this line below in Application_Start().
 
 	Bootstrapper.Initialise();
 	
-Voilà! Now you have a generic abstraction layer with Entity Framework and Unity to ensure your db context is 'request safe'. (by the way [Entity Framework DbContext is intrinsically not thread safe](http://stackoverflow.com/a/11034535/2391304)) Since ASP.NET is using thread pool, also as a new feature in C# we can now use async and await so you can even have multiple threads within an http request. So you need to be extra careful about multiple DbContext instances might get created per thread as a single web request can spawn multiple threads, and ASP.NET thread pooling meaning DbContext instance might get cached up and lives as long as the host thread lives. This is a bad bad bad situation and your users might see inconsistent data. Well, I think I better stop here as DbContext thread safe deserves a full on [discussion](http://stackoverflow.com/a/3266481/2391304) on its own. 
+Voilà! Now you have a generic abstraction layer with Entity Framework and Unity and your db context is per request safe. (by the way [Entity Framework DbContext is intrinsically not thread safe](http://stackoverflow.com/a/11034535/2391304)) Since ASP.NET is using thread pool, also as a new feature in C# we can now use async and await so you can even have multiple threads within an http request. So you need to be extra careful about multiple DbContext instances might get created per thread as a single web request can spawn multiple threads, and ASP.NET thread pooling meaning DbContext instance might get cached up and lives as long as the host thread lives. This is a bad bad bad situation and your users might see inconsistent data. Well, I think I better stop here as DbContext thread safe deserves a full on [discussion](http://stackoverflow.com/a/3266481/2391304) on its own. 
 
 I hope you enjoy reading this article. If you see anything you can improve please let me know.
 
