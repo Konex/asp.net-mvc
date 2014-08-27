@@ -30,7 +30,7 @@ Furthermore, if your app is in such a scale that you need to deploy it into a se
 
 That's enough justification so let's see how we can create a generic layer with Unit of work and Repository patterns. I have read quite a few articles on the Net about how to implement Unit of Work and Repository patterns in an ASP.NET app with Entity Framework. But quite often the scenarios and samples in those articles are too simple and hardly any one of them gives me a thorough walk-through on how do make Unit of Work and Repository classes generic. [This article](http://www.asp.net/mvc/tutorials/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application) from ASP.NET MVC site however gives me some hints on how to go about implementing one.
 
-Let's take a look at **_Repository.cs_**. 
+Let's take a look at **_Repository.cs_**. (The source code resides in the same folder as this md file)
 It is a generic repository and everything is pretty self-explanatory only two methods here deserve a bit of attention.
     
     // IQueryable<T>
