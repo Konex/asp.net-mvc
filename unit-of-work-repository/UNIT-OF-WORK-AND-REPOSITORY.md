@@ -97,8 +97,7 @@ Repositories are stored in a dictionary. We first check if a repository in inter
 
     public IRepository<T> Repository<T>() where T : class
     {
-        if (_repositories == null)
-            _repositories = new Dictionary<string, object>();
+        if (_repositories == null) _repositories = new Dictionary<string, object>();
 
         var type = typeof(T).Name;
 
