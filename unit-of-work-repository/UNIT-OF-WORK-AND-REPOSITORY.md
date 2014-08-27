@@ -1,4 +1,4 @@
-Generic Unit of Work with Unity
+Generic Unit of Work with Entity Framework and Unity
 ===========
 
 In this article I will to explain how to build a generic abstraction layer that sits between the business logic layer and data access layer with Entity Framework and Microsoft Unity.
