@@ -155,7 +155,7 @@ Make sure you implement the Dispose so Unity can call it when an http request en
 		GC.SuppressFinalize(this);
 	}
 	
-In Unity Boostrapper class, **_Bootstrapper.cs_**, you need to make sure the same DbContext is being used per http request by newing a PerRequestLifetimeManager when you do Unity register.
+In Unity Boostrapper class, **_Bootstrapper.cs_**, you need to make sure the same DbContext is being used per http request by newing a PerRequestLifetimeManager when you register types.
 
 	public static void RegisterTypes(IUnityContainer container)
     {
