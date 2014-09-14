@@ -12,13 +12,13 @@ namespace vDieu.Web.Models
         {
         }
 
-        public JsonResultViewModel(bool isSuccessful, T data)
+        public JsonResultViewModel(T data)
         {
             Data = data;
         }
         public JsonResultViewModel(bool isSuccessful, string msg = "")
         {
-            Success = isSuccessful;
+            IsSuccessful = isSuccessful;
             Message = msg;
         }
 
