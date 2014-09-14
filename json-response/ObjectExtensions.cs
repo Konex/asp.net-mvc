@@ -27,7 +27,7 @@ namespace vDieu
             var timeConverter = new IsoDateTimeConverter {DateTimeFormat = "dd-MM-yyyy HH:mm:ss"};
             settings.Converters.Add(timeConverter);
 
-            return = JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
+            return JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
         }
 		
 	public static string ToJsonNet(this object obj, JsonSerializerSettings settings, 
